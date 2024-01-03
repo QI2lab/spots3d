@@ -9,7 +9,8 @@ required_pkgs = ['numpy',
                 'clij2-fft',
                 'cupy-cuda11x',
                 'numba',
-                'cucim @ git+https://github.com/rapidsai/cucim.git@v23.12.01#egg=cucim&subdirectory=python/cucim'
+                'psfmodels',
+                'cucim',
                 'localize_psf @ git+https://git@github.com/qi2lab/localize-psf@master#egg=localize_psf',
                 ]
 
