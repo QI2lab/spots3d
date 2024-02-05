@@ -498,13 +498,24 @@ class SPOTS3D:
 
     def run_deconvolution(self):
         if self._decon_params is not None:
-            self._decon_data = _imageprocessing.deconvolve(self._data,
-                                                          self._psf,
-                                                          self._decon_params,
-                                                          self._overlap_depth)
-            self._decon_data, _ = _imageprocessing.convert_data_to_dask(self._decon_data,
-                                                                        self._chunk_size,
-                                                                        self._psf.shape)
+            if self._is_skewed:
+                self._decon_data = _imageprocessing.deconvolve(self._data,
+                                                            self._psf,
+                                                            self._decon_params,
+                                                            self._overlap_depth)
+                self._decon_data, _ = _imageprocessing.convert_data_to_dask(self._decon_data,
+                                                                            self._chunk_size,
+                                                                            self._psf.shape)
+            else:
+                from clij2fft.richardson_lucy_dask import richardson_lucy_dask
+                self._decon_data = richardson_lucy_dask(self._data.compute(),
+                                                        self._psf,
+                                                        numiterations=int(self._decon_params['iterations']),
+                                                        regularizationfactor=float(self._decon_params['tv_tau']),
+                                                        mem_to_use=12).astype(np.uint16)
+                self._decon_data, _ = _imageprocessing.convert_data_to_dask(self._decon_data,
+                                                                            self._chunk_size,
+                                                                            self._psf.shape)
         else:
             warnings.warn("No deconvolution parameters.")
 
@@ -704,12 +715,6 @@ class SPOTS3D:
                 self._dog_filter_source_data == 'raw'
             if self._chained['dog_filter']:
                 self.run_DoG_filter()
-                self._find_candidates_source_data == 'dog'
-            else:
-                if self._chained['deconvolve']:
-                    self._find_candidates_source_data == 'decon'
-                else:
-                    self._find_candidates_source_data == 'raw'
             if self._chained['find_candidates']:
                 self.run_find_candidates()
             if len(self._spot_candidates) > 0:               
