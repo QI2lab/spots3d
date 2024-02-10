@@ -94,7 +94,7 @@ def convert_data_to_dask(data: np.ndarray,
         else:
             dask_data = da.from_array(data,
                                     chunks=(chunk_size[0],chunk_size[1],chunk_size[2]))
-            overlap_depth = (psf_size[0],0,0)
+            overlap_depth = (psf_size[0]//2,0,0)
     elif isinstance(data, zarr_array):
         if data.shape[0]<chunk_size[0]:
             dask_data = da.from_zarr(data,
@@ -115,7 +115,7 @@ def convert_data_to_dask(data: np.ndarray,
             overlap_depth = (psf_size[0],0,0)
     else:
         raise ValueError("data of unsupported type")
-
+    
     del data
     gc.collect()
 
@@ -233,7 +233,6 @@ def perform_DoG_cartesian(image: Union[NDArray,ArrayLike],
     filtered : array
         Filtered image
     """
-
     kernel_small = localize.get_filter_kernel(kernel_small,
                                               [scan_step,
                                               pixel_size,
@@ -372,12 +371,20 @@ def DoG_filter(image: Union[np.ndarray, da.Array],
                                 scan_step=image_params['scan_step'])
 
     if image.ndim == 3:
-        dask_dog_filter = da.map_overlap(DoG_dask_func,
-                                        image,
-                                        depth=overlap_depth,
-                                        boundary='reflect',
-                                        trim=True,
-                                        meta=np.array((), dtype=np.float32))
+        if image_params['theta'] != 0:
+            dask_dog_filter = da.map_overlap(DoG_dask_func,
+                                            image,
+                                            depth=overlap_depth,
+                                            boundary='reflect',
+                                            trim=True,
+                                            meta=np.array((), dtype=np.float32))
+        else:
+            dask_dog_filter = da.map_overlap(DoG_dask_func,
+                                            image,
+                                            depth=[0,128,128],
+                                            boundary='reflect',
+                                            trim=True,
+                                            meta=np.array((), dtype=np.float32))
 
         if _cupy_available:
             with TqdmCallback(desc="DoG filter"):

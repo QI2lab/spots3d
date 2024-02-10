@@ -87,19 +87,7 @@ class SPOTS3D:
             out of memory computation.
         """
         
-        self._psf = psf
-        self._scan_chunk_size = scan_chunk_size
-        self._chunk_size = [self._scan_chunk_size,data.shape[1],data.shape[2]]
         self._metadata = metadata
-
-        self._data,\
-        self._overlap_depth = _imageprocessing.convert_data_to_dask(data,
-                                                                   self._chunk_size,psf.shape)
-
-        self._cupy_available,\
-        self._opencl_avilable,\
-        self._DECON_LIBRARY = _imageprocessing.return_gpu_status()
-
         if microscope_params is not None:
             self._microscope_params = microscope_params
             self._sigma_xy = 0.22 *\
@@ -110,7 +98,6 @@ class SPOTS3D:
                             self._microscope_params['ri'] *\
                             self._metadata['wvl']\
                             / self._microscope_params['na'] ** 2
-
         else:
             self._microscope_params = {'na' : 1.35,
                                        'ri' : 1.4,
@@ -123,10 +110,32 @@ class SPOTS3D:
                             self._microscope_params['ri'] *\
                             self._metadata['wvl']\
                             / self._microscope_params['na'] ** 2
+
+        
         # set-up flag for cartesian vs skewed data
         if 'theta' not in self._microscope_params.keys():
             self._microscope_params['theta'] = 0
         self._is_skewed = self._microscope_params['theta'] != 0
+        
+        self._psf = psf
+        if self._is_skewed:
+            self._scan_chunk_size = scan_chunk_size
+            self._chunk_size = [self._scan_chunk_size,data.shape[1],data.shape[2]]
+        else:
+            self._chunk_size = [data.shape[0],data.shape[1]//2,data.shape[2]//2]
+        
+
+        self._data,\
+        self._overlap_depth = _imageprocessing.convert_data_to_dask(data,
+                                                                   self._chunk_size,psf.shape)
+
+        self._cupy_available,\
+        self._opencl_avilable,\
+        self._DECON_LIBRARY = _imageprocessing.return_gpu_status()
+
+
+
+        
 
         if decon_params is not None:
             self._decon_params = decon_params
@@ -364,20 +373,41 @@ class SPOTS3D:
 
     @scan_chunk_size.setter
     def scan_chunk_size(self,new_scan_chunk_size : Sequence[int]):
-        self._scan_chunk_size = new_scan_chunk_size
-        self._chunk_size = [self._scan_chunk_size,
-                            self._data.shape[1],
-                            self._data.shape[2]]
+        
+        if self._is_skewed:
+            self._scan_chunk_size = new_scan_chunk_size
+            self._chunk_size = [self._scan_chunk_size,
+                                self._data.shape[1],
+                                self._data.shape[2]]
+            self._data, self._overlap_depth = _imageprocessing.convert_data_to_dask(self._data,
+                                                                                    self._chunk_size,
+                                                                                    self._psf.shape)
+            if self._decon_data is not None:
+                self._decon_data, self._overlap_depth = _imageprocessing.convert_data_to_dask(self._decon_data,
+                                                                                            self._chunk_size,
+                                                                                            self._psf.shape)
+            if self._dog_data is not None:
+                self._dog_data, self._overlap_depth = _imageprocessing.convert_data_to_dask(self._dog_data,
+                                                                                            self._chunk_size,
+                                                                                            self._psf.shape)
+            
+    @property
+    def wf_chunk_size(self):
+        return self._data.chunks
+
+    @wf_chunk_size.setter
+    def wf_chunk_size(self,new_wf_chunk_size : Sequence[int]):
+        self._wf_chunk_size = new_wf_chunk_size
         self._data, self._overlap_depth = _imageprocessing.convert_data_to_dask(self._data,
-                                                                                self._chunk_size,
+                                                                                self._wf_chunk_size,
                                                                                 self._psf.shape)
         if self._decon_data is not None:
             self._decon_data, self._overlap_depth = _imageprocessing.convert_data_to_dask(self._decon_data,
-                                                                                          self._chunk_size,
+                                                                                          self._wf_chunk_size,
                                                                                           self._psf.shape)
         if self._dog_data is not None:
             self._dog_data, self._overlap_depth = _imageprocessing.convert_data_to_dask(self._dog_data,
-                                                                                        self._chunk_size,
+                                                                                        self._wf_chunk_size,
                                                                                         self._psf.shape)
 
     @property
@@ -513,6 +543,7 @@ class SPOTS3D:
                                                         numiterations=int(self._decon_params['iterations']),
                                                         regularizationfactor=float(self._decon_params['tv_tau']),
                                                         mem_to_use=12).astype(np.uint16)
+                self._chunk_size = [self._data.shape[0],self._data.shape[1]//2,self._data.shape[2]//2]
                 self._decon_data, _ = _imageprocessing.convert_data_to_dask(self._decon_data,
                                                                             self._chunk_size,
                                                                             self._psf.shape)
@@ -535,6 +566,8 @@ class SPOTS3D:
                                                             self._DoG_filter_params,
                                                             self._overlap_depth,
                                                             self._image_params)
+                if not(self._is_skewed):
+                    self._chunk_size = [self._data.shape[0],self._data.shape[1]//2,self._data.shape[2]//2]
                 self._dog_data, _ = _imageprocessing.convert_data_to_dask(self._dog_data,
                                                                           self._chunk_size,
                                                                           self._psf.shape)
@@ -720,6 +753,7 @@ class SPOTS3D:
             if len(self._spot_candidates) > 0:               
                 self.run_fit_candidates()
                 self.run_filter_spots()
-                self.save_results(dir_localize, base_name)
+                if self._chained['save_results']:
+                    self.save_results(dir_localize, base_name)
         else:
             warnings.warn("Set all parameters and chained options before running.")
