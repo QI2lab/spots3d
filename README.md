@@ -16,7 +16,7 @@ Then, build and install the qi2lab branch of [Gpufit](https://github.com/QI2lab/
 
 Finally, install SPOTS3D and cupy extras
 ```
-pip install spots3d@git+https://git@github.com/qi2lab/spots3d@main#egg=spots3d'
+pip install spots3d@git+https://git@github.com/qi2lab/spots3d@main#egg=spots3d
 python -m cupyx.tools.install_library --cuda 11.x --library cutensor
 ```
 
