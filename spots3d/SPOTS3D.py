@@ -554,14 +554,12 @@ class SPOTS3D:
 
         if self._DoG_filter_params is not None:
             if self._dog_filter_source_data == 'raw':
-                print(self._chunk_size)
                 self._dog_data = _imageprocessing.DoG_filter(self._data,
                                                             self._DoG_filter_params,
                                                             self._overlap_depth,
                                                             self._image_params)
                 if not(self._is_skewed):
                     self._chunk_size = [self._data.shape[0],self._data.shape[1]//2,self._data.shape[2]//2]
-                    print(self._chunk_size)
                 self._dog_data, _ = _imageprocessing.convert_data_to_dask(self._dog_data,
                                                                           self._chunk_size,
                                                                           self._psf.shape)
@@ -584,17 +582,13 @@ class SPOTS3D:
 
         if self._find_candidates_params is not None:
             if self._find_candidates_source_data == 'raw':
-                if not(self._is_skewed):
-                    self._chunk_size = [self._data.shape[0],self._data.shape[1]//2,self._data.shape[2]//2]
-                self._spot_candidates =\
-                    _imageprocessing.find_candidates(self._data,
-                                                    self._find_candidates_params,
-                                                    self._coords,
-                                                    self._image_params)
+                    self._spot_candidates =\
+                        _imageprocessing.find_candidates(self._data,
+                                                        self._find_candidates_params,
+                                                        self._coords,
+                                                        self._image_params)
             elif self._find_candidates_source_data == 'decon':
                 if self._decon_data is not None:
-                    if not(self._is_skewed):
-                        self._chunk_size = [self._data.shape[0],self._data.shape[1]//2,self._data.shape[2]//2]
                     self._spot_candidates =\
                         _imageprocessing.find_candidates(self._decon_data,
                                                         self._find_candidates_params,
@@ -604,8 +598,6 @@ class SPOTS3D:
                     warnings.warn("Run deconvolution before finding spot candidates.")
             elif self._find_candidates_source_data == 'dog':
                 if self._dog_data is not None:
-                    if not(self._is_skewed):
-                        self._chunk_size = [self._data.shape[0],self._data.shape[1]//2,self._data.shape[2]//2]
                     self._spot_candidates =\
                         _imageprocessing.find_candidates(self._dog_data,
                                                         self._find_candidates_params,
