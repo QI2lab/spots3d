@@ -576,7 +576,7 @@ def identify_candidates(image: Union[np.ndarray, da.Array],
 
     candidates = np.stack((zc_comb,yc_comb,xc_comb,amps), axis=1)
 
-    return candidates
+    return np.transpose(candidates)
 
     # useful for diagnostic on raw data
     # centers_guess_inds[:,0] = centers_guess_inds[:,0]+z_min
@@ -632,7 +632,7 @@ def find_candidates(image: Union[np.ndarray, da.Array],
     # candidates at the chunk edges 
     dask_find_candidates = da.map_blocks(find_candidates_dask_func,
                                          image,
-                                         drop_axis=1,
+                                         drop_axis=[1],
                                          meta=np.array((), dtype=np.float32))
 
     if _cupy_available:
@@ -647,7 +647,7 @@ def find_candidates(image: Union[np.ndarray, da.Array],
     del dxy_min, dz_min, dask_find_candidates
     gc.collect()
 
-    return candidate_spots
+    return np.transpose(candidate_spots)
 
 def fit_candidate_spots(image: Union[np.ndarray, da.Array],
                         spot_candidates: np.ndarray,
