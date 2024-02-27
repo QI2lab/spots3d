@@ -420,7 +420,7 @@ def DoG_filter(image: Union[np.ndarray, da.Array],
     else:
         raise ValueError(f"image.ndim = {image.ndim:d}, but must be either 3 or 4")
 
-    return filtered_image.astype(np.float32)
+    return np.flip(filtered_image.astype(np.float32),axis=0)
 
 def identify_candidates(image: Union[np.ndarray, da.Array],
                         coords: Sequence[np.ndarray],
