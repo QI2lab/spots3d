@@ -3,7 +3,7 @@ GPU accelerated spot finding and localization for both skewed (diSPIM, lattice, 
 
 Install
 -------
-Create a python>=3.10 and CUDA >=11.2, <12.0 environment. We will only use conda (or mambda if you prefer) for the intial CUDA installation.
+Create a python>=3.10 and CUDA >=11.2, <12.0 environment. We will only use conda (or mamba if you prefer) for the intial CUDA installation.
 
 For example if you are using conda,
 ```
@@ -15,7 +15,7 @@ python -m cupyx.tools.install_library --cuda 11.x --library cutensor
 
 Then, build and install the qi2lab branch of [Gpufit](https://github.com/QI2lab/Gpufit).
 
-Finally, install SPOTS3D and cupy extras
+Finally, install SPOTS3D
 ```
 pip install spots3d@git+https://git@github.com/qi2lab/spots3d@main#egg=spots3d
 ```
