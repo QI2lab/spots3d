@@ -3,7 +3,7 @@ GPU accelerated spot finding and localization for both skewed (diSPIM, lattice, 
 
 Install
 -------
-Create a python>=3.10 and CUDA >=11.2, <12.0 environment. We will only use conda (or mamba if you prefer) for the intial CUDA installation.
+Create a python>=3.10 and CUDA >=11.2, <12.0 environment. We will use conda (or mamba if you prefer) for the CUDA and CuPy installation.
 
 For example if you are using conda and on Linux,
 ```
