@@ -9,7 +9,7 @@ For example if you are using conda,
 ```
 conda create -n spots3d python=3.10
 conda activate spots3d
-conda install -c conda-forge cudatoolkit=11.8
+conda install -c conda-forge cudatoolkit=11.8 cupy
 ```
 
 Then, build and install the qi2lab branch of [Gpufit](https://github.com/QI2lab/Gpufit).
