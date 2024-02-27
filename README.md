@@ -5,7 +5,15 @@ Install
 -------
 Create a python>=3.10 and CUDA >=11.2, <12.0 environment. We will only use conda (or mamba if you prefer) for the intial CUDA installation.
 
-For example if you are using conda,
+For example if you are using conda and on Linux,
+```
+conda create -n spots3d python=3.10
+conda activate spots3d
+conda install -c conda-forge cudatoolkit=11.8 cupy cucim
+python -m cupyx.tools.install_library --cuda 11.x --library cutensor
+```
+
+If you are using conda and on Windows,
 ```
 conda create -n spots3d python=3.10
 conda activate spots3d
