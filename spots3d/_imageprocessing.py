@@ -828,6 +828,16 @@ def fit_candidate_spots(image: Union[np.ndarray, da.Array],
         pbar.update(1)
 
     pbar.close()
+    
+    if centers_guess.shape[0] == 0:
+        init_params = None
+        fit_params = None
+        fit_states = None
+        fit_states_key = None
+        chi_sqrs = None
+        niters = None
+        fit_t = None
+        rois = None
 
     return init_params, fit_params, fit_states, fit_states_key, chi_sqrs, niters, np.array(fit_t), rois
 

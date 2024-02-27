@@ -619,16 +619,21 @@ class SPOTS3D:
                                                          self._fit_candidate_spots_params,
                                                          self._image_params,
                                                          self._return_rois)
-
-                self._init_params = self._fitting_results[0]
-                self._fit_params = self._fitting_results[1]
-                self._fit_states = self._fitting_results[2]
-                self._fit_states_key = self._fitting_results[3]
-                self._chi_sqrs = self._fitting_results[4] 
-                self._niters = self._fitting_results[5]
-                self._fit_t = self._fitting_results[6]
-                if self._return_rois:
-                    self._rois = self._fitting_results[7]
+                    
+                if self._fitting_results[0] is not None:
+                    self._init_params = self._fitting_results[0]
+                    self._fit_params = self._fitting_results[1]
+                    self._fit_states = self._fitting_results[2]
+                    self._fit_states_key = self._fitting_results[3]
+                    self._chi_sqrs = self._fitting_results[4] 
+                    self._niters = self._fitting_results[5]
+                    self._fit_t = self._fitting_results[6]
+                    if self._return_rois:
+                        self._rois = self._fitting_results[7]
+                    self.skip_filter_and_save = False
+                else:
+                    self._fitting_results = None
+                    self.skip_filter_and_save = True
         else:
             warnings.warn("Generate candidate list before fitting.")
 
