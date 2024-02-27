@@ -7,19 +7,23 @@ required_pkgs = ['numpy',
                 'joblib',
                 'tqdm',
                 'clij2-fft',
-                'cupy-cuda11x',
                 'numba',
                 'psfmodels',
-                'cucim',
                 'localize_psf @ git+https://git@github.com/qi2lab/localize-psf@master#egg=localize_psf',
                 ]
+
+# check what platform we are on
+if sys.platform == 'win32':
+  required_pkgs.append(['cucim @ git+https://github.com/rapidsai/cucim.git@v23.02.00#egg=cucim&subdirectory=python/cucim'])
+else:
+  required_pkgs.append(['cucim @ git+https://github.com/rapidsai/cucim.git@v24.02.00'])
 
 # extras
 extras = {}
 
 setup(
     name='spots3d',
-    version="0.1.0",
+    version="0.1.1",
     description="SPOTS3D",
     long_description="Class interface to qi2lab localization codes for finding and localizing spots in 3D images.",
     author="qi2lab",
