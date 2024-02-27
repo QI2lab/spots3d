@@ -5,7 +5,7 @@ Install
 -------
 Create a python>=3.10 and CUDA >=11.2, <12.0 environment. We will use conda (or mamba if you prefer) for the CUDA and CuPy installation.
 
-For example if you are using conda and on Linux,
+For Linux OS:
 ```
 conda create -n spots3d python=3.10
 conda activate spots3d
@@ -13,7 +13,7 @@ conda install -c conda-forge cudatoolkit=11.8 cupy cucim
 python -m cupyx.tools.install_library --cuda 11.x --library cutensor
 ```
 
-If you are using conda and on Windows,
+For Windows OS:
 ```
 conda create -n spots3d python=3.10
 conda activate spots3d
@@ -21,9 +21,11 @@ conda install -c conda-forge cudatoolkit=11.8 cupy
 python -m cupyx.tools.install_library --cuda 11.x --library cutensor
 ```
 
+On Windows OS, the required skimage portion of cuCIM will be built and installed during spots3d installation.
+
 Then, build and install the qi2lab branch of [Gpufit](https://github.com/QI2lab/Gpufit).
 
-Finally, install SPOTS3D
+Finally, install spots3d
 ```
 pip install spots3d@git+https://git@github.com/qi2lab/spots3d@main#egg=spots3d
 ```
