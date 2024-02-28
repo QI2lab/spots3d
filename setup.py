@@ -15,8 +15,6 @@ required_pkgs = ['numpy',
 # check what platform we are on
 if sys.platform == 'win32':
   required_pkgs.append(['cucim @ git+https://github.com/rapidsai/cucim.git@v23.02.00#egg=cucim&subdirectory=python/cucim'])
-else:
-  required_pkgs.append(['cucim @ git+https://github.com/rapidsai/cucim.git@v24.02.00#egg=cucim&subdirectory=python/cucim'])
 
 # extras
 extras = {}
