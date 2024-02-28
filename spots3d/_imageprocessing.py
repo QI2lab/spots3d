@@ -575,7 +575,6 @@ def identify_candidates(image: Union[np.ndarray, da.Array],
     xc_comb = centers_comb[:,2]
 
     candidates = np.stack((zc_comb,yc_comb,xc_comb,amps), axis=1)
-
     return np.transpose(candidates)
 
     # useful for diagnostic on raw data

@@ -390,7 +390,16 @@ class SPOTS3D:
                 self._dog_data, self._overlap_depth = _imageprocessing.convert_data_to_dask(self._dog_data,
                                                                                             self._chunk_size,
                                                                                             self._psf.shape)
-            
+            # # check if _overlap is greater than the number of scan positions
+            # if self._overlap_depth[0] > self._data.shape[0]:
+            #     print(f"Initial chunk sizes for skewed data:\ndata shape:{self._data.shape} \nchunk size:{self._chunk_size} \noverlap:{self._overlap_depth}")
+            #     overlap_list = list(self._overlap_depth)
+            #     overlap_list[0] = self._data.shape[0]
+            #     self._overlap_depth = tuple(overlap_list)
+                
+            #     print(f"New overlap:{self._overlap_depth}")
+            # print(f"Initial chunk sizes for skewed data:\ndata shape:{self._data.shape} \nchunk size:{self._chunk_size} \noverlap:{self._overlap_depth}")
+        
     @property
     def wf_chunk_size(self):
         return self._data.chunks
