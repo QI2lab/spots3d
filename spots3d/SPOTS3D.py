@@ -568,7 +568,7 @@ class SPOTS3D:
                                                             self._overlap_depth,
                                                             self._image_params)
                 if not(self._is_skewed):
-                    self._chunk_size = [self._data.shape[0],self._data.shape[1]//2,self._data.shape[2]//2]
+                    self._chunk_size = [self._data.shape[0],self._data.shape[1]//4,self._data.shape[2]//4]
                 self._dog_data, _ = _imageprocessing.convert_data_to_dask(self._dog_data,
                                                                           self._chunk_size,
                                                                           self._psf.shape)
@@ -578,7 +578,7 @@ class SPOTS3D:
                                                             self._overlap_depth,
                                                             self._image_params)
                 if not(self._is_skewed):
-                    self._chunk_size = [self._data.shape[0],self._data.shape[1]//2,self._data.shape[2]//2]
+                    self._chunk_size = [self._data.shape[0],self._data.shape[1]//4,self._data.shape[2]//4]
                 self._dog_data, _ = _imageprocessing.convert_data_to_dask(self._dog_data,
                                                                           self._chunk_size,
                                                                           self._psf.shape)
