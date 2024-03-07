@@ -9,7 +9,7 @@ For Linux OS:
 ```
 conda create -n spots3d python=3.10
 conda activate spots3d
-conda install -c conda-forge cudatoolkit=11.8 cupy cucim
+conda install -c conda-forge -c rapidsai -c nvidia cudatoolkit=11.8 cupy cucim=24.02 cuda-version=11.8
 python -m cupyx.tools.install_library --cuda 11.x --library cutensor
 ```
 
@@ -17,7 +17,7 @@ For Windows OS:
 ```
 conda create -n spots3d python=3.10
 conda activate spots3d
-conda install -c conda-forge cudatoolkit=11.8 cupy
+conda install -c conda-forge -c nvidia cudatoolkit=11.8 cupy cuda-version=11.8
 python -m cupyx.tools.install_library --cuda 11.x --library cutensor
 ```
 
