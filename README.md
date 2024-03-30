@@ -9,14 +9,14 @@ For Linux OS:
 ```
 conda create -n spots3d python=3.10
 conda activate spots3d
-conda install -c conda-forge -c rapidsai -c nvidia cudatoolkit=11.8 cupy cucim=24.02 cuda-version=11.8 cudnn cutensor nccl
+conda install -c conda-forge -c rapidsai -c nvidia cudatoolkit=11.8 cupy cucim=24.02 cuda-version=11.8 cudnn cutensor
 ```
 
 For Windows OS:
 ```
 conda create -n spots3d python=3.10
 conda activate spots3d
-conda install -c conda-forge -c nvidia cudatoolkit=11.8 cupy cuda-version=11.8 cudnn cutensor nccl
+conda install -c conda-forge -c nvidia cudatoolkit=11.8 cupy cuda-version=11.8 cudnn cutensor
 ```
 
 On Windows OS, the required skimage portion of cuCIM will be built and installed during spots3d installation.
